@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Formulaires</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #E0E0E0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1, h3 {
+            text-align: center;
+            color: #BB86FC;
+        }
+
+        div {
+            background-color: #1E1E1E;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        input[type="file"] {
+            margin: 10px 0 20px;
+            padding: 10px;
+            background-color: #2C2C2C;
+            color: #E0E0E0;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #BB86FC;
+            color: #121212;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #9E67E0;
+        }
+
+        #statusUpload {
+            margin-top: 20px;
+            color: #B0B0B0;
+        }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+</head>
+<body>
+    <div>
+        <h1>Formulaires</h1>
+        <h3>Ajouter des images pour le diaporama</h3>
+        <input type="file" id="fileInput" multiple>
+        <button onclick="uploadImages()">Upload</button>
+        <div id="statusUpload"></div>
+    </div>
+    <script src="../Scripts/brzgobrgrpjebnvaffzea.js"></script>
+
+    <script>
+        // Function to upload images to Firebase Storage
+        function uploadImages() {
+            const fileInput = document.getElementById('fileInput');
+            const files = fileInput.files;
+            const statusUpload = document.getElementById('statusUpload');
+        
+            statusUpload.innerHTML = ''; // Clear any previous messages
+        
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const storageRef = firebase.storage().ref();
+                const uploadTask = storageRef.child('Ced/Diapos/' + file.name).put(file);
+            
+                uploadTask.on('state_changed', 
+                    (snapshot) => {
+                        // Progress tracking
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        console.log('Upload is ' + progress + '% done');
+                    },
+                    (error) => {
+                        // Handle unsuccessful uploads
+                        console.error('Error uploading file:', error);
+                        statusUpload.innerHTML = ''; // Clear any previous messages
+                        const errorMessage = document.createElement('p');
+                        errorMessage.style.color = 'red';
+                        errorMessage.innerText = `Erreur de téléchargement pour le fichier ${file.name}: ${error.message}`;
+                        statusUpload.appendChild(errorMessage);
+                    },
+                    () => {
+                        // Handle successful uploads on complete
+                        console.log('File uploaded successfully');
+                        statusUpload.innerHTML = ''; // Clear any previous messages
+                        const successMessage = document.createElement('p');
+                        successMessage.style.color = 'green';
+                        successMessage.innerText = `Fichier(s) téléchargé avec succès.`;
+                        statusUpload.appendChild(successMessage);
+                    }
+                );
+            }
+        }
+
+    </script>
+</body>
+</html>
