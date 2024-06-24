@@ -121,11 +121,37 @@
 
     <script src="../Scripts/brzgobrgrpjebnvaffzea.js"></script>
 
-    <script src="../Scripts/allPagesInterdites.js"></script>
-
-    <script src="../Scripts/allPagesGestionConnexion.js"></script>
-
     <script>
+        // Check if the user has a valid code in local storage
+        function checkLocalCode() {
+            console.log("debug");
+            const storedCode = localStorage.getItem('Code');
+            if (storedCode) {
+                var codeBis = db.collection('SU');
+                codeBis.where('Valeur', '==', storedCode).get()
+                    .then((querySnapshot) => {
+                        if (querySnapshot.empty) {
+                            console.log("pas de correspondance");
+                            window.location.href = '../index.html';
+                        } else {
+                            console.log("correspondance");
+                            // Code found, no redirection
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Erreur lors de la vérification du code:', error);
+                        window.location.href = '../index.html';
+                    });
+            } else {
+                window.location.href = '../index.html';
+            }
+        }
+
+        // Run the check on page load
+        window.onload = function() {
+            checkLocalCode();
+        };
+
         // Récupération des musiques depuis Firestore
         db.collection('Musiques').get().then(querySnapshot => {
             const musiquesListe = document.getElementById('musiquesListe');

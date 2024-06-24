@@ -1,9 +1,6 @@
-function encryptPassword(password) {
-    return CryptoJS.SHA256(password).toString();
-}
-
 // Check if the user has a valid code in local storage
 function checkLocalCode() {
+    console.log("debug");
     const storedCode = localStorage.getItem('Code');
     var validInput = true;
     if (storedCode) {
@@ -12,6 +9,9 @@ function checkLocalCode() {
             .then((querySnapshot) => {
                 if (querySnapshot.empty) {
                     validInput = false;
+                    console.log("pas de correspondance");
+                } else {
+                    console.log("correspondance");
                 }
             })
             .catch((error) => {
