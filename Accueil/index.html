@@ -143,6 +143,7 @@
     <script>
         function checkLocalCode() {
             const storedCode = localStorage.getItem('Code');
+            
             if (storedCode) {
                 var code = db.collection('Code');
                 code.where('Valeur', '==', storedCode).get()
