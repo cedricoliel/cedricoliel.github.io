@@ -4,6 +4,9 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/node-forge@1.0.0/dist/forge.min.js"></script>
     <title>Cedric Oliel</title>
     <style>
         body {
@@ -106,26 +109,52 @@
         </div>
     </div>
 
+    <script src="Scripts/brzgobrgrpjebnvaffzea.js"></script>
+
     <script>
+        function encryptPassword(password) {
+            var md = forge.md.sha256.create();
+            md.update(password);
+            return md.digest().toHex();
+        }
+
         // Soumission du formulaire
         document.getElementById('connexion').addEventListener('submit', function(event) {
             event.preventDefault(); // Empêcher le formulaire de se soumettre normalement
 
             // Récupération des valeurs du formulaire
-            const codeIdentifiant = document.getElementById('codeIdentifiant').value;
+            const codeSaisi = document.getElementById('codeIdentifiant').value;
+            const hashedCodeIdentifiant = encryptPassword(codeSaisi);
+            console.log(hashedCodeIdentifiant);
 
             // Effacer les messages précédents
             const statusSaisieCode = document.getElementById('statusSaisieCode');
             statusSaisieCode.innerHTML = '';
 
-            if (codeIdentifiant.length > 0 && artistes.length > 0) {
-                console.log("if");
-            } else {
-                const errorMessage = document.createElement('p');
-                errorMessage.style.color = 'red';
-                errorMessage.innerText = `Veuillez saisir un code valide`;
-                statusSaisieCode.appendChild(errorMessage);
-            }    
+            var code = db.collection('Code');
+            code.where('Valeur', '==', hashedCodeIdentifiant).get()
+                .then((querySnapshot) => {
+                    if (!querySnapshot.empty) {
+                        const errorMessage = document.createElement('p');
+                        errorMessage.style.color = 'green';
+                        errorMessage.innerText = `Le code saisi est valide`;
+                        statusSaisieCode.appendChild(errorMessage);
+                        window.location.href = 'Accueil';
+                    } else {
+                        // Informer l'utilisateur que les informations de connexion sont incorrectes
+                        const errorMessage = document.createElement('p');
+                        errorMessage.style.color = 'red';
+                        errorMessage.innerText = `Veuillez saisir un code valide`;
+                        statusSaisieCode.appendChild(errorMessage);
+                    }
+                })
+                .catch((error) => {
+                    const errorMessage = document.createElement('p');
+                    errorMessage.style.color = 'red';
+                    errorMessage.innerText = `Erreur lors de la vérification des informations de connexion`;
+                    statusSaisieCode.appendChild(errorMessage);
+                    console.error('Erreur lors de la vérification des informations de connexion:', error);
+                });  
         });
     </script>
 </body>
