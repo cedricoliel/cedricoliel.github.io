@@ -125,7 +125,6 @@
             // Récupération des valeurs du formulaire
             const codeSaisi = document.getElementById('codeIdentifiant').value;
             const hashedCodeIdentifiant = encryptPassword(codeSaisi);
-            console.log(hashedCodeIdentifiant);
 
             // Effacer les messages précédents
             const statusSaisieCode = document.getElementById('statusSaisieCode');
@@ -135,27 +134,27 @@
             code.where('Valeur', '==', hashedCodeIdentifiant).get()
                 .then((querySnapshot) => {
                     if (!querySnapshot.empty) {
-                        const errorMessage = document.createElement('p');
-                        errorMessage.style.color = 'green';
-                        errorMessage.innerText = `Le code saisi est valide`;
-                        statusSaisieCode.appendChild(errorMessage);
+                        const message = document.createElement('p');
+                        message.style.color = 'green';
+                        message.innerText = `Le code saisi est valide`;
+                        statusSaisieCode.appendChild(message);
 
                         localStorage.setItem('Code', hashedCodeIdentifiant);
 
                         window.location.href = 'Accueil';
                     } else {
                         // Informer l'utilisateur que les informations de connexion sont incorrectes
-                        const errorMessage = document.createElement('p');
-                        errorMessage.style.color = 'red';
-                        errorMessage.innerText = `Veuillez saisir un code valide`;
-                        statusSaisieCode.appendChild(errorMessage);
+                        const message = document.createElement('p');
+                        message.style.color = 'red';
+                        message.innerText = `Veuillez saisir un code valide`;
+                        statusSaisieCode.appendChild(message);
                     }
                 })
                 .catch((error) => {
-                    const errorMessage = document.createElement('p');
-                    errorMessage.style.color = 'red';
-                    errorMessage.innerText = `Erreur lors de la vérification des informations de connexion`;
-                    statusSaisieCode.appendChild(errorMessage);
+                    const message = document.createElement('p');
+                    message.style.color = 'red';
+                    message.innerText = `Erreur lors de la vérification des informations de connexion`;
+                    statusSaisieCode.appendChild(message);
                     console.error('Erreur lors de la vérification des informations de connexion:', error);
                 });  
         });
