@@ -130,33 +130,47 @@
             const statusSaisieCode = document.getElementById('statusSaisieCode');
             statusSaisieCode.innerHTML = '';
 
+            var validInput = true;
+
             var code = db.collection('Code');
             code.where('Valeur', '==', hashedCodeIdentifiant).get()
                 .then((querySnapshot) => {
-                    if (!querySnapshot.empty) {
-                        const message = document.createElement('p');
-                        message.style.color = 'green';
-                        message.innerText = `Le code saisi est valide`;
-                        statusSaisieCode.appendChild(message);
-
-                        localStorage.setItem('Code', hashedCodeIdentifiant);
-
-                        window.location.href = 'Accueil';
-                    } else {
-                        // Informer l'utilisateur que les informations de connexion sont incorrectes
-                        const message = document.createElement('p');
-                        message.style.color = 'red';
-                        message.innerText = `Veuillez saisir un code valide`;
-                        statusSaisieCode.appendChild(message);
+                    if (querySnapshot.empty) {
+                        validInput = false;
                     }
                 })
                 .catch((error) => {
-                    const message = document.createElement('p');
-                    message.style.color = 'red';
-                    message.innerText = `Erreur lors de la vérification des informations de connexion`;
-                    statusSaisieCode.appendChild(message);
+                    validInput = false;
                     console.error('Erreur lors de la vérification des informations de connexion:', error);
-                });  
+                });
+
+            var codeBis = db.collection('SU');
+            codeBis.where('Valeur', '==', hashedCodeIdentifiant).get()
+                .then((querySnapshot) => {
+                    if (querySnapshot.empty) {
+                        validInput = false;
+                    }
+                })
+                .catch((error) => {
+                    validInput = false;
+                    console.error('Erreur lors de la vérification des informations de connexion:', error);
+                });
+
+            if (validInput) {
+                const message = document.createElement('p');
+                message.style.color = 'green';
+                message.innerText = `Le code saisi est valide`;
+                statusSaisieCode.appendChild(message);
+
+                localStorage.setItem('Code', hashedCodeIdentifiant);
+
+                window.location.href = 'Accueil';
+            } else {
+                const message = document.createElement('p');
+                message.style.color = 'green';
+                message.innerText = `Le code saisi est valide`;
+                statusSaisieCode.appendChild(message);
+            }
         });
     </script>
 </body>
