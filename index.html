@@ -139,6 +139,9 @@
                         errorMessage.style.color = 'green';
                         errorMessage.innerText = `Le code saisi est valide`;
                         statusSaisieCode.appendChild(errorMessage);
+
+                        localStorage.setItem('Code', hashedCodeIdentifiant);
+
                         window.location.href = 'Accueil';
                     } else {
                         // Informer l'utilisateur que les informations de connexion sont incorrectes
