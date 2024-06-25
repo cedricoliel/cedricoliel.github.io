@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <title>Suggestion de musique</title>
+    <title>Cedric Oliel</title>
     <style>
         body {
             background-color: #121212;
@@ -84,7 +84,7 @@
 </head>
 <body>
     <div>
-        <h1>Suggestion de musique</h1>
+        <h1>Cedric Oliel</h1>
         <h3>Ajouter des suggestions de musiques</h3>
         <div>
             <p>Les champs munis d'un astérisque (*) sont obligatoires.</p>
@@ -108,6 +108,8 @@
     <script src="../Scripts/brzgobrgrpjebnvaffzea.js"></script>
 
     <script src="../Scripts/envoieSuggestionsMusiques.js"></script>
+
+    <script src="../Scripts/diaposUploadImages.js"></script>
 
     <script>
         function checkLocalCode() {
@@ -142,7 +144,7 @@
                                 })
                                 .finally(() => {
                                     if (!isValid) {
-                                        window.location.href = '../';
+                                        window.location.href = 'index.html';
                                     }
                                 });
                         } else if (isValid) {
@@ -150,7 +152,7 @@
                         }
                     });
             } else {
-                window.location.href = '../';
+                window.location.href = 'index.html';
             }
         }
     

@@ -3,7 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <title>Formulaires</title>
+    <title>Cedric Oliel</title>
     <style>
         body {
             background-color: #121212;
@@ -71,7 +71,7 @@
 </head>
 <body>
     <div>
-        <h1>Formulaires</h1>
+        <h1>Cedric Oliel</h1>
         <h3>Ajouter des images pour le diaporama</h3>
         <input type="file" id="fileInput" multiple>
         <button onclick="uploadImages()">Upload</button>
@@ -114,7 +114,7 @@
                                 })
                                 .finally(() => {
                                     if (!isValid) {
-                                        window.location.href = '../';
+                                        window.location.href = 'index.html';
                                     }
                                 });
                         } else if (isValid) {
@@ -122,7 +122,7 @@
                         }
                     });
             } else {
-                window.location.href = '../';
+                window.location.href = 'index.html';
             }
         }
     
