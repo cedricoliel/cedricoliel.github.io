@@ -82,37 +82,45 @@
     <script src="../Scripts/allPagesGestionConnexion.js"></script>
 
     <script>
-        // Check if the user has a valid code in local storage
-        async function checkLocalCode() {
+        function checkLocalCode() {
             const storedCode = localStorage.getItem('Code');
+    
             if (storedCode) {
-                try {
-                    const codeCollection = db.collection('Code');
-                    const suCollection = db.collection('SU');
+                var isValid = false;
+                var isSU = false;
     
-                    const [codeSnapshot, suSnapshot] = await Promise.all([
-                        codeCollection.where('Valeur', '==', storedCode).get(),
-                        suCollection.where('Valeur', '==', storedCode).get()
-                    ]);
-    
-                    if (codeSnapshot.empty && suSnapshot.empty) {
-                        window.location.href = '../index.html';
-                    } else {
-                        console.log("Correspondance trouvée");
-                        // Code found, no redirection
-                        if (!codeSnapshot.empty) {
-                            console.log("Code found in 'Code' collection");
+                var code = db.collection('Code');
+                code.where('Valeur', '==', storedCode).get()
+                    .then((querySnapshot) => {
+                        if (!querySnapshot.empty) {
+                            isValid = true;
                         }
-                        if (!suSnapshot.empty) {
-                            console.log("Code found in 'SU' collection");
-                            document.getElementById('diapos').style.display = 'block';
-                            document.getElementById('musiques').style.display = 'block';
+                    })
+                    .catch((error) => {
+                        console.error('Erreur lors de la vérification du code:', error);
+                    })
+                    .finally(() => {
+                        if (!isValid) {
+                            var codeBis = db.collection('SU');
+                            codeBis.where('Valeur', '==', storedCode).get()
+                                .then((querySnapshot) => {
+                                    if (!querySnapshot.empty) {
+                                        isValid = true;
+                                        isSU = true;
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.error('Erreur lors de la vérification du code:', error);
+                                })
+                                .finally(() => {
+                                    if (!isValid) {
+                                        window.location.href = '../index.html';
+                                    }
+                                });
+                        } else if (isValid) {
+                            // Code valid in 'Code' collection, do nothing special
                         }
-                    }
-                } catch (error) {
-                    console.error('Erreur lors de la vérification du code:', error);
-                    window.location.href = '../index.html';
-                }
+                    });
             } else {
                 window.location.href = '../index.html';
             }
