@@ -110,61 +110,58 @@
     <script src="Scripts/brzgobrgrpjebnvaffzea.js"></script>
 
     <script>
-        function encryptPassword(password) {
-            var md = forge.md.sha256.create();
-            md.update(password);
-            return md.digest().toHex();
+        function checkLocalCode() {
+            const storedCode = localStorage.getItem('Code');
+    
+            if (storedCode) {
+                var isValid = false;  // Variable to track the validity of the code
+    
+                var code = db.collection('Code');
+                code.where('Valeur', '==', storedCode).get()
+                    .then((querySnapshot) => {
+                        if (!querySnapshot.empty) {
+                            isValid = true;  // Code found in 'Code' collection
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Erreur lors de la vérification du code:', error);
+                    })
+                    .finally(() => {
+                        // Check the second collection only if the first check fails
+                        if (!isValid) {
+                            var codeBis = db.collection('SU');
+                            codeBis.where('Valeur', '==', storedCode).get()
+                                .then((querySnapshot) => {
+                                    if (!querySnapshot.empty) {
+                                        isValid = true;  // Code found in 'SU' collection
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.error('Erreur lors de la vérification du code:', error);
+                                })
+                                .finally(() => {
+                                    if (!isValid) {
+                                        window.location.href = '../index.html';  // Redirect only if both checks fail
+                                    } else {
+                                        document.getElementById('diapos').style.display = 'block';
+                                        document.getElementById('musiques').style.display = 'block';
+                                    }
+                                });
+                        } else {
+                            document.getElementById('diapos').style.display = 'block';
+                            document.getElementById('musiques').style.display = 'block';
+                        }
+                    });
+            } else {
+                window.location.href = '../index.html';
+            }
         }
-
-        // Soumission du formulaire
-        document.getElementById('connexion').addEventListener('submit', function(event) {
-            event.preventDefault(); // Empêcher le formulaire de se soumettre normalement
-
-            // Récupération des valeurs du formulaire
-            const codeSaisi = document.getElementById('codeIdentifiant').value;
-            const hashedCodeIdentifiant = encryptPassword(codeSaisi);
-
-            // Effacer les messages précédents
-            const statusSaisieCode = document.getElementById('statusSaisieCode');
-            statusSaisieCode.innerHTML = '';
-
-            // Promesses pour vérifier les collections
-            const checkCode = db.collection('Code').where('Valeur', '==', hashedCodeIdentifiant).get();
-            const checkCodeBis = db.collection('SU').where('Valeur', '==', hashedCodeIdentifiant).get();
-
-            Promise.all([checkCode, checkCodeBis])
-                .then((results) => {
-                    const [codeSnapshot, codeBisSnapshot] = results;
-                    let validInput = false;
-
-                    if (!codeSnapshot.empty || !codeBisSnapshot.empty) {
-                        validInput = true;
-                    }
-
-                    if (validInput) {
-                        const message = document.createElement('p');
-                        message.style.color = 'green';
-                        message.innerText = `Le code saisi est valide`;
-                        statusSaisieCode.appendChild(message);
-
-                        localStorage.setItem('Code', hashedCodeIdentifiant);
-
-                        window.location.href = 'Accueil';
-                    } else {
-                        const message = document.createElement('p');
-                        message.style.color = 'red';
-                        message.innerText = `Le code saisi est invalide`;
-                        statusSaisieCode.appendChild(message);
-                    }
-                })
-                .catch((error) => {
-                    console.error('Erreur lors de la vérification des informations de connexion:', error);
-                    const message = document.createElement('p');
-                    message.style.color = 'red';
-                    message.innerText = `Erreur lors de la vérification des informations de connexion`;
-                    statusSaisieCode.appendChild(message);
-                });
-        });
+    
+        // Run the check on page load
+        window.onload = function() {
+            checkLocalCode();
+        };
     </script>
+    
 </body>
 </html>
