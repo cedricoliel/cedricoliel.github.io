@@ -143,41 +143,57 @@
     <script>
         function checkLocalCode() {
             const storedCode = localStorage.getItem('Code');
-            
+    
             if (storedCode) {
+                var isValid = false;
+                var isSU = false;
+    
                 var code = db.collection('Code');
                 code.where('Valeur', '==', storedCode).get()
                     .then((querySnapshot) => {
-                        if (querySnapshot.empty) {
-                            window.location.href = '../index.html';
+                        if (!querySnapshot.empty) {
+                            isValid = true;
                         }
                     })
                     .catch((error) => {
                         console.error('Erreur lors de la vérification du code:', error);
-                        window.location.href = '../index.html';
-                    });
-
-                var codeBis = db.collection('SU');
-                codeBis.where('Valeur', '==', storedCode).get()
-                    .then((querySnapshot) => {
-                        if (querySnapshot.empty) {
-                            window.location.href = '../index.html';
-                        }
                     })
-                    .catch((error) => {
-                        console.error('Erreur lors de la vérification du code:', error);
-                        window.location.href = '../index.html';
+                    .finally(() => {
+                        if (!isValid) {
+                            var codeBis = db.collection('SU');
+                            codeBis.where('Valeur', '==', storedCode).get()
+                                .then((querySnapshot) => {
+                                    if (!querySnapshot.empty) {
+                                        isValid = true;
+                                        isSU = true;
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.error('Erreur lors de la vérification du code:', error);
+                                })
+                                .finally(() => {
+                                    if (!isValid) {
+                                        window.location.href = '../index.html';
+                                    } else if (isSU) {
+                                        document.getElementById('diapos').style.display = 'block';
+                                        document.getElementById('musiques').style.display = 'block';
+                                    }
+                                });
+                        } else if (isValid) {
+                            // Code valid in 'Code' collection, do nothing special
+                        }
                     });
             } else {
                 window.location.href = '../index.html';
             }
         }
-
+    
         // Run the check on page load
         window.onload = function() {
             checkLocalCode();
         };
     </script>
+    
 </body>
 
 </html>
