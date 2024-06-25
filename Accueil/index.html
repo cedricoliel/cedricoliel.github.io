@@ -106,14 +106,14 @@
     
     <div class="container">
         <div class="section-title">Diaporama</div>
-        <a href="../Diapos/index.html" class="link-card" id="diapos">
+        <a href="../Diapos" class="link-card" id="diapos">
             <div class="content">
                 <span class="icon">📷</span>
                 <span>Affichage des diapos</span>
                 <p>Cette page te renvoie vers l'affichage du diaporama.</p>
             </div>
         </a>
-        <a href="../formulaireTelechargementDiapo/index.html" class="link-card">
+        <a href="../formulaireTelechargementDiapo" class="link-card">
             <div class="content">
                 <span class="icon">📤</span>
                 <span>Formulaires pour télécharger les photos</span>
@@ -122,14 +122,14 @@
         </a>
 
         <div class="section-title">Suggestions de musique</div>
-        <a href="../FileDattente/index.html" class="link-card" id="musiques">
+        <a href="../FileDattente" class="link-card" id="musiques">
             <div class="content">
                 <span class="icon">🎵</span>
                 <span>Affichage des musiques</span>
                 <p>Cette page te renvoie vers l'affichage des musiques proposées par les fêtards.</p>
             </div>
         </a>
-        <a href="../formulaireSuggestionMusique/index.html" class="link-card">
+        <a href="../formulaireSuggestionMusique" class="link-card">
             <div class="content">
                 <span class="icon">📝</span>
                 <span>Formulaires pour suggérer des musiques</span>
@@ -173,7 +173,7 @@
                                 })
                                 .finally(() => {
                                     if (!isValid) {
-                                        window.location.href = '../index.html';
+                                        window.location.href = '../';
                                     } else if (isSU) {
                                         document.getElementById('diapos').style.display = 'block';
                                         document.getElementById('musiques').style.display = 'block';
@@ -184,7 +184,7 @@
                         }
                     });
             } else {
-                window.location.href = '../index.html';
+                window.location.href = '../';
             }
         }
     

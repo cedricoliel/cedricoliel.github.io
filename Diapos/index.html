@@ -52,7 +52,7 @@
                     .then((querySnapshot) => {
                         if (querySnapshot.empty) {
                             console.log("pas de correspondance");
-                            window.location.href = '../index.html';
+                            window.location.href = '../';
                         } else {
                             console.log("correspondance");
                             // Code found, no redirection
@@ -60,10 +60,10 @@
                     })
                     .catch((error) => {
                         console.error('Erreur lors de la vérification du code:', error);
-                        window.location.href = '../index.html';
+                        window.location.href = '../';
                     });
             } else {
-                window.location.href = '../index.html';
+                window.location.href = '../';
             }
         }
 

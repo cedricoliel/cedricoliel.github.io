@@ -5,15 +5,15 @@ function checkLocalCode() {
         codeBis.where('Valeur', '==', storedCode).get()
             .then((querySnapshot) => {
                 if (querySnapshot.empty) {
-                    window.location.href = '../index.html';
+                    window.location.href = '../';
                 }
             })
             .catch((error) => {
                 console.error('Erreur lors de la vérification du code:', error);
-                window.location.href = '../index.html';
+                window.location.href = '../';
             });
     } else {
-        window.location.href = '../index.html';
+        window.location.href = '../';
     }
 }
 
