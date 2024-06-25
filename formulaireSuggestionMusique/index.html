@@ -109,6 +109,48 @@
 
     <script src="../Scripts/envoieSuggestionsMusiques.js"></script>
 
-    <script src="../Scripts/allPagesGestionConnexion.js"></script>
+    <script>
+        // Check if the user has a valid code in local storage
+        async function checkLocalCode() {
+            const storedCode = localStorage.getItem('Code');
+            if (storedCode) {
+                try {
+                    const codeCollection = db.collection('Code');
+                    const suCollection = db.collection('SU');
+    
+                    const [codeSnapshot, suSnapshot] = await Promise.all([
+                        codeCollection.where('Valeur', '==', storedCode).get(),
+                        suCollection.where('Valeur', '==', storedCode).get()
+                    ]);
+    
+                    if (codeSnapshot.empty && suSnapshot.empty) {
+                        window.location.href = '../index.html';
+                    } else {
+                        console.log("Correspondance trouvée");
+                        // Code found, no redirection
+                        if (!codeSnapshot.empty) {
+                            console.log("Code found in 'Code' collection");
+                        }
+                        if (!suSnapshot.empty) {
+                            console.log("Code found in 'SU' collection");
+                            document.getElementById('diapos').style.display = 'block';
+                            document.getElementById('musiques').style.display = 'block';
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la vérification du code:', error);
+                    window.location.href = '../index.html';
+                }
+            } else {
+                window.location.href = '../index.html';
+            }
+        }
+    
+        // Run the check on page load
+        window.onload = function() {
+            checkLocalCode();
+        };
+    </script>
+    
 </body>
 </html>

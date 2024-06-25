@@ -82,47 +82,46 @@
     <script src="../Scripts/allPagesGestionConnexion.js"></script>
 
     <script>
-        // Function to upload images to Firebase Storage
-        function uploadImages() {
-            const fileInput = document.getElementById('fileInput');
-            const files = fileInput.files;
-            const statusUpload = document.getElementById('statusUpload');
-        
-            statusUpload.innerHTML = ''; // Clear any previous messages
-        
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const storageRef = firebase.storage().ref();
-                const uploadTask = storageRef.child('Ced/Diapos/' + file.name).put(file);
-            
-                uploadTask.on('state_changed', 
-                    (snapshot) => {
-                        // Progress tracking
-                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        console.log('Upload is ' + progress + '% done');
-                    },
-                    (error) => {
-                        // Handle unsuccessful uploads
-                        console.error('Error uploading file:', error);
-                        statusUpload.innerHTML = ''; // Clear any previous messages
-                        const errorMessage = document.createElement('p');
-                        errorMessage.style.color = 'red';
-                        errorMessage.innerText = `Erreur de téléchargement pour le fichier ${file.name}: ${error.message}`;
-                        statusUpload.appendChild(errorMessage);
-                    },
-                    () => {
-                        // Handle successful uploads on complete
-                        console.log('File uploaded successfully');
-                        statusUpload.innerHTML = ''; // Clear any previous messages
-                        const successMessage = document.createElement('p');
-                        successMessage.style.color = 'green';
-                        successMessage.innerText = `Fichier(s) téléchargé avec succès.`;
-                        statusUpload.appendChild(successMessage);
+        // Check if the user has a valid code in local storage
+        async function checkLocalCode() {
+            const storedCode = localStorage.getItem('Code');
+            if (storedCode) {
+                try {
+                    const codeCollection = db.collection('Code');
+                    const suCollection = db.collection('SU');
+    
+                    const [codeSnapshot, suSnapshot] = await Promise.all([
+                        codeCollection.where('Valeur', '==', storedCode).get(),
+                        suCollection.where('Valeur', '==', storedCode).get()
+                    ]);
+    
+                    if (codeSnapshot.empty && suSnapshot.empty) {
+                        window.location.href = '../index.html';
+                    } else {
+                        console.log("Correspondance trouvée");
+                        // Code found, no redirection
+                        if (!codeSnapshot.empty) {
+                            console.log("Code found in 'Code' collection");
+                        }
+                        if (!suSnapshot.empty) {
+                            console.log("Code found in 'SU' collection");
+                            document.getElementById('diapos').style.display = 'block';
+                            document.getElementById('musiques').style.display = 'block';
+                        }
                     }
-                );
+                } catch (error) {
+                    console.error('Erreur lors de la vérification du code:', error);
+                    window.location.href = '../index.html';
+                }
+            } else {
+                window.location.href = '../index.html';
             }
         }
-
+    
+        // Run the check on page load
+        window.onload = function() {
+            checkLocalCode();
+        };
     </script>
 </body>
 </html>
