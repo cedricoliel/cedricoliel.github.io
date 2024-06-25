@@ -3,9 +3,6 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/node-forge@1.0.0/dist/forge.min.js"></script>
     <title>Cedric Oliel</title>
     <style>
         body {
@@ -26,15 +23,6 @@
             color: #BB86FC;
         }
 
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-
-        #codeIdentifiant {
-            margin: 40px auto 20px auto;
-        }
-
         .container {
             width: 100%;
             max-width: 600px;
@@ -42,16 +30,6 @@
             flex-direction: column;
             align-items: center;
             gap: 20px;
-        }
-
-        .section-title {
-            color: #BB86FC;
-            font-size: 24px;
-            margin: 30px 0 10px;
-            text-align: center;
-            border-bottom: 1px solid #BB86FC;
-            padding-bottom: 5px;
-            width: 100%;
         }
 
         .link-card {
@@ -67,14 +45,6 @@
             color: inherit;
         }
 
-        .link-card a {
-            text-decoration: none;
-            color: inherit;
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
         .link-card .content {
             display: flex;
             flex-direction: column;
@@ -83,7 +53,7 @@
 
         .link-card p {
             color: #B0B0B0;
-            font-size: 14px;
+            font-size: 16px;
             margin: 10px 0 0;
         }
     </style>
@@ -94,77 +64,11 @@
     <h1>Cedric Oliel</h1>
 
     <div class="container">
-        <div class="section-title">Connexion</div>
-        <div href="Diapos" class="link-card">
-            <div class="content">
-                <span>Saisissez le code (6 caractères)</span>
-                <form id="connexion">
-                    <input type="text" id="codeIdentifiant" name="codeIdentifiant" placeholder="Code*">
-                    <button type="submit">Valider</button>
-                    <div id="statusSaisieCode"></div>
-                </form>
-            </div>
+        <div class="link-card">
+            <p>
+                Vous ne pouvez rien faire sur cette page. Allez plutôt scanner un QR code auprès du DJ afin d'avoir un lien direct vers les pages autorisées.
+            </p>
         </div>
     </div>
-
-    <script src="Scripts/brzgobrgrpjebnvaffzea.js"></script>
-
-    <script>
-        function encryptPassword(password) {
-            var md = forge.md.sha256.create();
-            md.update(password);
-            return md.digest().toHex();
-        }
-
-        // Soumission du formulaire
-        document.getElementById('connexion').addEventListener('submit', function(event) {
-            event.preventDefault(); // Empêcher le formulaire de se soumettre normalement
-
-            // Récupération des valeurs du formulaire
-            const codeSaisi = document.getElementById('codeIdentifiant').value;
-            const hashedCodeIdentifiant = encryptPassword(codeSaisi);
-
-            // Effacer les messages précédents
-            const statusSaisieCode = document.getElementById('statusSaisieCode');
-            statusSaisieCode.innerHTML = '';
-
-            // Promesses pour vérifier les collections
-            const checkCode = db.collection('Code').where('Valeur', '==', hashedCodeIdentifiant).get();
-            const checkCodeBis = db.collection('SU').where('Valeur', '==', hashedCodeIdentifiant).get();
-
-            Promise.all([checkCode, checkCodeBis])
-                .then((results) => {
-                    const [codeSnapshot, codeBisSnapshot] = results;
-                    let validInput = false;
-
-                    if (!codeSnapshot.empty || !codeBisSnapshot.empty) {
-                        validInput = true;
-                    }
-
-                    if (validInput) {
-                        const message = document.createElement('p');
-                        message.style.color = 'green';
-                        message.innerText = `Le code saisi est valide`;
-                        statusSaisieCode.appendChild(message);
-
-                        localStorage.setItem('Code', hashedCodeIdentifiant);
-
-                        window.location.href = 'Accueil';
-                    } else {
-                        const message = document.createElement('p');
-                        message.style.color = 'red';
-                        message.innerText = `Le code saisi est invalide`;
-                        statusSaisieCode.appendChild(message);
-                    }
-                })
-                .catch((error) => {
-                    console.error('Erreur lors de la vérification des informations de connexion:', error);
-                    const message = document.createElement('p');
-                    message.style.color = 'red';
-                    message.innerText = `Erreur lors de la vérification des informations de connexion`;
-                    statusSaisieCode.appendChild(message);
-                });
-        });
-    </script>
 </body>
 </html>

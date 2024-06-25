@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Formulaires</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #E0E0E0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1, h3 {
+            text-align: center;
+            color: #BB86FC;
+        }
+
+        div {
+            background-color: #1E1E1E;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        input[type="file"] {
+            margin: 10px 0 20px;
+            padding: 10px;
+            background-color: #2C2C2C;
+            color: #E0E0E0;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #BB86FC;
+            color: #121212;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #9E67E0;
+        }
+
+        #statusUpload {
+            margin-top: 20px;
+            color: #B0B0B0;
+        }
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+</head>
+<body>
+    <div>
+        <h1>Formulaires</h1>
+        <h3>Ajouter des images pour le diaporama</h3>
+        <input type="file" id="fileInput" multiple>
+        <button onclick="uploadImages()">Upload</button>
+        <div id="statusUpload"></div>
+    </div>
+    <script src="../Scripts/brzgobrgrpjebnvaffzea.js"></script>
+
+    <script src="../Scripts/allPagesGestionConnexion.js"></script>
+
+    <script>
+        function checkLocalCode() {
+            const storedCode = localStorage.getItem('Code');
+    
+            if (storedCode) {
+                var isValid = false;
+                var isSU = false;
+    
+                var code = db.collection('Code');
+                code.where('Valeur', '==', storedCode).get()
+                    .then((querySnapshot) => {
+                        if (!querySnapshot.empty) {
+                            isValid = true;
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Erreur lors de la vérification du code:', error);
+                    })
+                    .finally(() => {
+                        if (!isValid) {
+                            var codeBis = db.collection('SU');
+                            codeBis.where('Valeur', '==', storedCode).get()
+                                .then((querySnapshot) => {
+                                    if (!querySnapshot.empty) {
+                                        isValid = true;
+                                        isSU = true;
+                                    }
+                                })
+                                .catch((error) => {
+                                    console.error('Erreur lors de la vérification du code:', error);
+                                })
+                                .finally(() => {
+                                    if (!isValid) {
+                                        window.location.href = '../';
+                                    }
+                                });
+                        } else if (isValid) {
+                            // Code valid in 'Code' collection, do nothing special
+                        }
+                    });
+            } else {
+                window.location.href = '../';
+            }
+        }
+    
+        // Run the check on page load
+        window.onload = function() {
+            checkLocalCode();
+        };
+    </script>
+</body>
+</html>

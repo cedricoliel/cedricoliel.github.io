@@ -3,162 +3,167 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
-    <title>Suggestion de musique</title>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/node-forge@1.0.0/dist/forge.min.js"></script>
+    <title>Cedric Oliel</title>
     <style>
         body {
             background-color: #121212;
             color: #E0E0E0;
             font-family: Arial, sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            height: 100vh;
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
+            padding-bottom: 20px;
         }
 
-        h1, h3 {
+        h1 {
             text-align: center;
             color: #BB86FC;
         }
 
         form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #codeIdentifiant {
+            margin: 40px auto 20px auto;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .section-title {
+            color: #BB86FC;
+            font-size: 24px;
+            margin: 30px 0 10px;
+            text-align: center;
+            border-bottom: 1px solid #BB86FC;
+            padding-bottom: 5px;
+            width: 100%;
+        }
+
+        .link-card {
             background-color: #1E1E1E;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             width: 100%;
-            max-width: 400px;
-            box-sizing: border-box;
-        }
-
-        label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #2C2C2C;
-            color: #E0E0E0;
-            box-sizing: border-box;
-        }
-
-        input[type="text"]:focus {
-            outline: 2px solid #BB86FC;
-        }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #BB86FC;
-            color: #121212;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #9E67E0;
-        }
-
-        p {
-            font-size: 14px;
-            color: #B0B0B0;
-        }
-
-        #statusSuggestMusiques {
-            margin-top: 20px;
             text-align: center;
+            box-sizing: border-box;
+            transition: transform 0.2s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .link-card a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .link-card .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .link-card p {
+            color: #B0B0B0;
+            font-size: 14px;
+            margin: 10px 0 0;
         }
     </style>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+    <link rel="icon" href="../Images/music.png" type="image/png">
 </head>
+
 <body>
-    <div>
-        <h1>Suggestion de musique</h1>
-        <h3>Ajouter des suggestions de musiques</h3>
-        <div>
-            <p>Les champs munis d'un astérisque (*) sont obligatoires.</p>
-            <form id="musicSuggestForm">
-                <label for="titleMusic">Titre*:</label>
-                <input type="text" id="titleMusic" name="titleMusic" placeholder="Titre*">
-                <label for="artistesMusic">Artiste(s)*:</label>
-                <input type="text" id="artistesMusic" name="artistesMusic" placeholder="Artiste(s)*">
-                <label for="fromMusic">De la part de:</label>
-                <input type="text" id="fromMusic" name="fromMusic" placeholder="De la part de">
-                <label for="forMusic">Pour:</label>
-                <input type="text" id="forMusic" name="forMusic" placeholder="Pour ?">
-                <label for="remarqueMusic">Remarque particulière ?<br><p>(par exemple une préférence pour le remix s'il existe ou l'original ?)</p></label>
-                <input type="text" id="remarqueMusic" name="remarqueMusic" placeholder="Remarque">
-                <button type="submit">Valider</button>
-                <div id="statusSuggestMusiques"></div>
-            </form>
+    <h1>Cedric Oliel</h1>
+
+    <div class="container">
+        <div class="section-title">Connexion</div>
+        <div class="link-card">
+            <div class="content">
+                <span>Saisissez le code (6 caractères)</span>
+                <form id="connexion">
+                    <input type="text" id="codeIdentifiant" name="codeIdentifiant" placeholder="Code*">
+                    <button type="submit">Valider</button>
+                    <div id="statusSaisieCode"></div>
+                </form>
+            </div>
         </div>
     </div>
-    
+
     <script src="../Scripts/brzgobrgrpjebnvaffzea.js"></script>
 
-    <script src="../Scripts/envoieSuggestionsMusiques.js"></script>
-
     <script>
-        function checkLocalCode() {
-            const storedCode = localStorage.getItem('Code');
-    
-            if (storedCode) {
-                var isValid = false;
-                var isSU = false;
-    
-                var code = db.collection('Code');
-                code.where('Valeur', '==', storedCode).get()
-                    .then((querySnapshot) => {
-                        if (!querySnapshot.empty) {
-                            isValid = true;
-                        }
-                    })
-                    .catch((error) => {
-                        console.error('Erreur lors de la vérification du code:', error);
-                    })
-                    .finally(() => {
-                        if (!isValid) {
-                            var codeBis = db.collection('SU');
-                            codeBis.where('Valeur', '==', storedCode).get()
-                                .then((querySnapshot) => {
-                                    if (!querySnapshot.empty) {
-                                        isValid = true;
-                                        isSU = true;
-                                    }
-                                })
-                                .catch((error) => {
-                                    console.error('Erreur lors de la vérification du code:', error);
-                                })
-                                .finally(() => {
-                                    if (!isValid) {
-                                        window.location.href = '../';
-                                    }
-                                });
-                        } else if (isValid) {
-                            // Code valid in 'Code' collection, do nothing special
-                        }
-                    });
-            } else {
-                window.location.href = '../';
-            }
+        function encryptPassword(password) {
+            var md = forge.md.sha256.create();
+            md.update(password);
+            return md.digest().toHex();
         }
-    
-        // Run the check on page load
-        window.onload = function() {
-            checkLocalCode();
-        };
+
+        // Soumission du formulaire
+        document.getElementById('connexion').addEventListener('submit', function(event) {
+            event.preventDefault(); // Empêcher le formulaire de se soumettre normalement
+
+            // Récupération des valeurs du formulaire
+            const codeSaisi = document.getElementById('codeIdentifiant').value;
+            const hashedCodeIdentifiant = encryptPassword(codeSaisi);
+
+            // Effacer les messages précédents
+            const statusSaisieCode = document.getElementById('statusSaisieCode');
+            statusSaisieCode.innerHTML = '';
+
+            // Promesses pour vérifier les collections
+            const checkCode = db.collection('Code').where('Valeur', '==', hashedCodeIdentifiant).get();
+
+            Promise.all([checkCode])
+                .then((results) => {
+                    const [codeSnapshot] = results;
+                    let validInput = false;
+
+                    if (!codeSnapshot.empty) {
+                        validInput = true;
+                    }
+
+                    if (validInput) {
+                        const message = document.createElement('p');
+                        message.style.color = 'green';
+                        message.innerText = `Le code saisi est valide`;
+                        statusSaisieCode.appendChild(message);
+
+                        localStorage.setItem('Code', hashedCodeIdentifiant);
+
+                        window.location.href = 'form.html';
+                    } else {
+                        const message = document.createElement('p');
+                        message.style.color = 'red';
+                        message.innerText = `Le code saisi est invalide`;
+                        statusSaisieCode.appendChild(message);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Erreur lors de la vérification des informations de connexion:', error);
+                    const message = document.createElement('p');
+                    message.style.color = 'red';
+                    message.innerText = `Erreur lors de la vérification des informations de connexion`;
+                    statusSaisieCode.appendChild(message);
+                });
+        });
     </script>
-    
 </body>
 </html>
