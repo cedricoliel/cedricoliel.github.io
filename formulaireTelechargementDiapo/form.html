@@ -63,6 +63,18 @@
         #statusUpload {
             margin-top: 20px;
             color: #B0B0B0;
+            max-height: 400px; /* Limite la hauteur pour rendre la zone scrollable */
+            overflow-y: auto;  /* Ajoute une barre de défilement si nécessaire */
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        .file-status-container {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        progress {
+            width: 100%;
         }
     </style>
     <link rel="icon" href="../Images/music.png" type="image/png">
@@ -74,7 +86,7 @@
     <div>
         <h1>Cedric Oliel</h1>
         <h3>Ajouter des images pour le diaporama</h3>
-        <input type="file" id="fileInput" multiple>
+        <input type="file" id="fileInput" multiple accept=".png, .jpg, .jpeg">
         <button onclick="uploadImages()">Upload</button>
         <div id="statusUpload"></div>
     </div>
