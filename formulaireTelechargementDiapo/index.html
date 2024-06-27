@@ -86,6 +86,24 @@
             font-size: 14px;
             margin: 10px 0 0;
         }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .input-field {
+            background-color: #2A2A2A;
+            border: 1px solid #BB86FC;
+            border-radius: 5px;
+            color: #E0E0E0;
+            font-size: 18px;
+            padding: 10px;
+            width: 20px;
+            height: 30px;
+            text-align: center;
+        }
     </style>
     <link rel="icon" href="../Images/music.png" type="image/png">
 </head>
@@ -97,9 +115,16 @@
         <div class="section-title">Connexion</div>
         <div class="link-card">
             <div class="content">
-                <span>Saisissez le code (6 caractères)</span>
+                <span>Saisissez le code</span><br>
                 <form id="connexion">
-                    <input type="text" id="codeIdentifiant" name="codeIdentifiant" placeholder="Code*">
+                    <div class="input-container">
+                        <input type="text" class="input-field" maxlength="1" id="input1" oninput="moveToNext(this, 'input2')">
+                        <input type="text" class="input-field" maxlength="1" id="input2" oninput="moveToNext(this, 'input3')">
+                        <input type="text" class="input-field" maxlength="1" id="input3" oninput="moveToNext(this, 'input4')">
+                        <input type="text" class="input-field" maxlength="1" id="input4" oninput="moveToNext(this, 'input5')">
+                        <input type="text" class="input-field" maxlength="1" id="input5" oninput="moveToNext(this, 'input6')">
+                        <input type="text" class="input-field" maxlength="1" id="input6" oninput="validateCode()">
+                    </div>
                     <button type="submit">Valider</button>
                     <div id="statusSaisieCode"></div>
                 </form>
@@ -121,7 +146,7 @@
             event.preventDefault(); // Empêcher le formulaire de se soumettre normalement
 
             // Récupération des valeurs du formulaire
-            const codeSaisi = document.getElementById('codeIdentifiant').value;
+            const codeSaisi = Array.from(document.querySelectorAll('.input-field')).map(input => input.value).join('');
             const hashedCodeIdentifiant = encryptPassword(codeSaisi);
 
             // Effacer les messages précédents
@@ -164,6 +189,32 @@
                     statusSaisieCode.appendChild(message);
                 });
         });
+
+        function moveToNext(current, nextFieldID) {
+            if (current.value.length >= 1) {
+                document.getElementById(nextFieldID).focus();
+            }
+        }
+
+        function validateCode() {
+            setTimeout(() => {
+                const inputs = document.querySelectorAll('.input-field');
+                let code = '';
+                inputs.forEach(input => {
+                    code += input.value;
+                });
+                if (code.length === 6) {
+                    document.querySelector('#connexion button[type="submit"]').click();
+                } else {
+                    const statusSaisieCode = document.getElementById('statusSaisieCode');
+                    statusSaisieCode.innerHTML = '';
+                    const message = document.createElement('p');
+                    message.style.color = 'red';
+                    message.innerText = `Le code saisi est invalide`;
+                    statusSaisieCode.appendChild(message);
+                }
+            }, 100); // Délai de 100ms pour permettre l'affichage du dernier caractère
+        }
     </script>
 </body>
 </html>
