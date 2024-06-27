@@ -86,38 +86,5 @@
                 Vous ne pouvez rien faire sur cette page. Allez plutôt scanner un QR code auprès du DJ afin d'avoir un lien direct vers les pages autorisées.
             </p>
         </div>
-        <div class="input-container">
-            <input type="text" class="input-field" maxlength="1" id="input1" oninput="moveToNext(this, 'input2')">
-            <input type="text" class="input-field" maxlength="1" id="input2" oninput="moveToNext(this, 'input3')">
-            <input type="text" class="input-field" maxlength="1" id="input3" oninput="moveToNext(this, 'input4')">
-            <input type="text" class="input-field" maxlength="1" id="input4" oninput="moveToNext(this, 'input5')">
-            <input type="text" class="input-field" maxlength="1" id="input5" oninput="moveToNext(this, 'input6')">
-            <input type="text" class="input-field" maxlength="1" id="input6" oninput="validateCode()">
-        </div>
-    </div>
-
-    <script>
-        function moveToNext(current, nextFieldID) {
-            if (current.value.length >= 1) {
-                document.getElementById(nextFieldID).focus();
-            }
-        }
-
-        function validateCode() {
-            setTimeout(() => {
-                const inputs = document.querySelectorAll('.input-field');
-                let code = '';
-                inputs.forEach(input => {
-                    code += input.value;
-                });
-                if (code.length === 6) {
-                    alert('Code valide : ' + code);
-                    // Ajouter la logique de soumission ici
-                } else {
-                    alert('Veuillez entrer un code de 6 caractères.');
-                }
-            }, 100); // Délai de 100ms pour permettre l'affichage du dernier caractère
-        }
-    </script>
 </body>
 </html>
