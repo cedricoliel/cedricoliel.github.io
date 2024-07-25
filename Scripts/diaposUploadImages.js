@@ -48,6 +48,7 @@ function uploadImages() {
                 console.log('File uploaded successfully');
                 statusMessage.style.color = 'green';
                 statusMessage.innerText = `Fichier ${file.name} téléchargé avec succès.`;
+                location.reload();
             }
         );
     }
