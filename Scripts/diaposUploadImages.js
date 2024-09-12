@@ -1,7 +1,7 @@
-function checkRaspberryConnection() {
-    try {
+async function checkRaspberryConnection() {
         console.log("degub");
-        const response = fetch('http://192.168.1.16/ping');  // URL locale de la Raspberry
+    try {
+        const response = await fetch('http://192.168.1.16/ping');  // URL locale de la Raspberry
         console.log("response sans erreur");
         if (response.ok) {
             // Raspberry accessible
