@@ -1,22 +1,20 @@
 async function checkRaspberryConnection() {
-        console.log("degub");
+    console.log("Début de la vérification de la connexion Raspberry Pi");
     try {
         const response = await fetch('http://192.168.1.16/ping');  // URL locale de la Raspberry
-        console.log("response sans erreur");
+        console.log("Réponse obtenue");
         if (response.ok) {
-            // Raspberry accessible
-            console.log("raspberry accessible");
+            console.log("Raspberry accessible");
             localStorage.setItem('useRaspberry', 'true');
         } else {
-            // Firestore sera utilisé
-            console.log("firestore utilisé");
+            console.log("Réponse reçue, mais non OK. Utilisation de Firestore.");
             localStorage.setItem('useRaspberry', 'false');
         }
     } catch (error) {
-        // Si la requête échoue, on passe à Firestore
-        console.log("requête échoue");
+        console.log("Erreur lors de la requête, utilisation de Firestore.");
         localStorage.setItem('useRaspberry', 'false');
     }
+    console.log("Fin de la vérification de la connexion Raspberry Pi");
 }
 
 function uploadImages() {
