@@ -21,7 +21,10 @@ async function checkRaspberryConnection() {
 
 function uploadImages() {
     console.log("uploadImages");
-    window.onload = checkRaspberryConnection;
+    window.onload = function() {
+        checkRaspberryConnection();
+    };
+    
     console.log("fonction test donnée locale");
     const useRaspberry = localStorage.getItem('useRaspberry') === 'true';
     console.log("Valeur stockée: " + useRaspberry);
