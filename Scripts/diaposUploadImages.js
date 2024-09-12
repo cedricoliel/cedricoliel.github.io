@@ -1,4 +1,27 @@
+async function checkRaspberryConnection() {
+    try {
+        console.log("degub");
+        const response = await fetch('http://192.168.1.16/ping');  // URL locale de la Raspberry
+        console.log("response sans erreur");
+        if (response.ok) {
+            // Raspberry accessible
+            console.log("raspberry accessible");
+            localStorage.setItem('useRaspberry', 'true');
+        } else {
+            // Firestore sera utilisé
+            console.log("firestore utilisé");
+            localStorage.setItem('useRaspberry', 'false');
+        }
+    } catch (error) {
+        // Si la requête échoue, on passe à Firestore
+        console.log("requête échoue");
+        localStorage.setItem('useRaspberry', 'false');
+    }
+}
+
 function uploadImages() {
+    console.log("uploadImages");
+    window.onload = checkRaspberryConnection;
     console.log("fonction test donnée locale");
     const useRaspberry = localStorage.getItem('useRaspberry') === 'true';
     console.log("Valeur stockée: " + useRaspberry);
