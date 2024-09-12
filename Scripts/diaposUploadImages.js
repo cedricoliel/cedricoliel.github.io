@@ -1,5 +1,38 @@
-// Function to upload images to Firebase Storage
 function uploadImages() {
+    console.log("fonction test donnée locale");
+    const useRaspberry = localStorage.getItem('useRaspberry') === 'true';
+    console.log("Valeur stockée: " + useRaspberry);
+
+    if (useRaspberry) {
+        console.log("donc raspberry");
+        uploadToRaspberry();
+    } else {
+        console.log("donc firestore");
+        uploadToFirestore();
+    }
+}
+
+function uploadToRaspberry() {
+    // Code pour uploader sur la Raspberry
+    const files = document.getElementById('fileInput').files;
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+        formData.append('file' + i, files[i]);
+    }
+    
+    fetch('http://192.168.1.16/upload', {  // Adresse IP locale de la Raspberry Pi
+        method: 'POST',
+        body: formData
+    }).then(response => {
+        console.log("Upload vers la Raspberry réussi");
+    }).catch(error => {
+        console.error("Erreur d'upload vers la Raspberry", error);
+    });
+}
+
+// Function to upload images to Firebase Storage
+function uploadToFirestore() {
+    console.log("réellement firestore");
     const fileInput = document.getElementById('fileInput');
     const files = fileInput.files;
     const statusUpload = document.getElementById('statusUpload');
